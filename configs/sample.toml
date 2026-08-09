@@ -1,0 +1,27 @@
+# RAGInspect Sample Pipeline Configuration
+
+name = "Production-Search-Pipeline"
+description = "Production RAG configuration evaluating vector retrieval, token usage, and LLM grounding"
+
+[embedding]
+model = "text-embedding-3-small"
+dimension = 1536
+distance_metric = "cosine"
+
+[vector_store]
+provider = "qdrant"
+collection = "technical_docs_v2"
+top_k = 5
+similarity_threshold = 0.65
+
+[llm]
+provider = "openai"
+model = "gpt-4o-mini"
+endpoint = "https://api.openai.com/v1"
+max_tokens = 1024
+temperature = 0.2
+
+[context]
+max_context_tokens = 4096
+deduplicate_threshold = 0.85
+prune_irrelevant = true
