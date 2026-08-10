@@ -3,7 +3,7 @@ use colored::*;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Attribute, Cell, Color, ContentArrangement, Table};
 
-use crate::types::{InspectMode, InspectionReport, RagArchitecture, Verdict};
+use crate::types::{InspectMode, InspectionReport, Verdict};
 
 /// Report renderer that formats inspection results as terminal tables or JSON.
 pub struct ReportRenderer;

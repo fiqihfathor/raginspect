@@ -1,5 +1,33 @@
+# Rust
 /target
-Cargo.lock
+/**/*.rs.bk
+*.pdb
+
+# Cargo
+Cargo.lock.bak
+
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
+*~
 .DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python (future bindings)
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# OS
+Thumbs.db
