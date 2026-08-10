@@ -16,7 +16,7 @@ use types::{InspectMode, RagArchitecture};
 #[derive(Parser, Debug)]
 #[command(
     name = "raginspect",
-    author = "Antigravity Team",
+    author = "fiqihfathor",
     version = "0.1.0",
     about = "X-ray diagnostic engine for Retrieval Augmented Generation (RAG) pipelines",
     long_about = "raginspect profiles each layer of a RAG application—retrieval relevance, context token efficiency, and LLM generation grounding—to deliver actionable diagnostics and quality verdicts."

@@ -2,7 +2,7 @@
 name = "raginspect"
 version = "0.1.0"
 edition = "2021"
-authors = ["Antigravity Developer <dev@antigravity.ai>"]
+authors = ["Fiqih Fathur Rahman <fiqihfathor@gmail.com>"]
 description = "A RAG Inspection & Profiling Engine - X-ray for Retrieval Augmented Generation pipelines"
 
 [dependencies]
