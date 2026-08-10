@@ -13,7 +13,10 @@ fn bench_naive_inspection(c: &mut Criterion) {
         b.iter(|| {
             black_box(
                 inspector
-                    .inspect("What is the memory overhead of Tokio tasks?", InspectMode::Full)
+                    .inspect(
+                        "What is the memory overhead of Tokio tasks?",
+                        InspectMode::Full,
+                    )
                     .unwrap(),
             );
         });
@@ -48,5 +51,9 @@ fn bench_architecture_recommendations(c: &mut Criterion) {
     }
 }
 
-criterion_group!(benches, bench_naive_inspection, bench_architecture_recommendations);
+criterion_group!(
+    benches,
+    bench_naive_inspection,
+    bench_architecture_recommendations
+);
 criterion_main!(benches);

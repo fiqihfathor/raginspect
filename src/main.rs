@@ -2,9 +2,7 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 
-use raginspect::{
-    InspectMode, Inspector, PipelineConfig, RagArchitecture, ReportRenderer,
-};
+use raginspect::{InspectMode, Inspector, PipelineConfig, RagArchitecture, ReportRenderer};
 
 /// 🔍 raginspect — X-ray diagnostic engine for RAG pipelines
 #[derive(Parser, Debug)]
@@ -27,7 +25,11 @@ struct CliArgs {
     query: String,
 
     /// Path to the pipeline configuration file (TOML format)
-    #[arg(short = 'c', long = "pipeline-config", default_value = "examples/configs/sample.toml")]
+    #[arg(
+        short = 'c',
+        long = "pipeline-config",
+        default_value = "examples/configs/sample.toml"
+    )]
     pipeline_config: PathBuf,
 
     /// Override the LLM model name specified in configuration

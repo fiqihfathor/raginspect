@@ -5,13 +5,16 @@
 //!
 //! ## Quick Start
 //!
-//! ```rust
+//! ```no_run
 //! use raginspect::{Inspector, InspectMode, PipelineConfig, RagArchitecture};
 //!
-//! let mut inspector = Inspector::new(PipelineConfig::default(), None);
-//! inspector.set_architecture(RagArchitecture::Naive);
-//! let report = inspector.inspect("What is RAG?", InspectMode::Full)?;
-//! println!("Health Score: {:.1}", report.overall_score);
+//! fn main() -> anyhow::Result<()> {
+//!     let mut inspector = Inspector::new(PipelineConfig::default(), None);
+//!     inspector.set_architecture(RagArchitecture::Naive);
+//!     let report = inspector.inspect("What is RAG?", InspectMode::Full)?;
+//!     println!("Health Score: {:.1}", report.overall_score);
+//!     Ok(())
+//! }
 //! ```
 
 pub mod config;
@@ -23,4 +26,7 @@ pub mod types;
 pub use config::PipelineConfig;
 pub use inspector::Inspector;
 pub use report::ReportRenderer;
-pub use types::{ChunkInfo, ContextStage, GenerationResult, InspectMode, InspectionReport, RagArchitecture, RetrievalResult, Verdict};
+pub use types::{
+    ChunkInfo, ContextStage, GenerationResult, InspectMode, InspectionReport, RagArchitecture,
+    RetrievalResult, Verdict,
+};

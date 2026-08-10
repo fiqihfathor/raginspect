@@ -60,20 +60,29 @@ impl ReportRenderer {
 
     fn print_summary_card(report: &InspectionReport) {
         println!();
-        println!("{}", "📋 INSPECTION METADATA & HEALTH SCORE".bold().underline());
+        println!(
+            "{}",
+            "📋 INSPECTION METADATA & HEALTH SCORE".bold().underline()
+        );
 
         let score_colored = if report.overall_score >= 85.0 {
-            format!("{:.1}/100 [EXCELLENT]", report.overall_score).bold().green()
+            format!("{:.1}/100 [EXCELLENT]", report.overall_score)
+                .bold()
+                .green()
         } else if report.overall_score >= 70.0 {
-            format!("{:.1}/100 [GOOD]", report.overall_score).bold().yellow()
+            format!("{:.1}/100 [GOOD]", report.overall_score)
+                .bold()
+                .yellow()
         } else {
-            format!("{:.1}/100 [NEEDS ATTENTION]", report.overall_score).bold().red()
+            format!("{:.1}/100 [NEEDS ATTENTION]", report.overall_score)
+                .bold()
+                .red()
         };
 
         let mut table = Table::new();
         table.load_preset(UTF8_FULL);
         table.set_content_arrangement(ContentArrangement::Dynamic);
-        
+
         table.add_row(vec![
             Cell::new("Target Query").add_attribute(Attribute::Bold),
             Cell::new(&report.query).fg(Color::Cyan),
@@ -104,10 +113,7 @@ impl ReportRenderer {
 
     fn print_architecture_profile(report: &InspectionReport) {
         println!();
-        println!(
-            "{}",
-            "🏗️ ARCHITECTURE PROFILE".bold().bright_blue()
-        );
+        println!("{}", "🏗️ ARCHITECTURE PROFILE".bold().bright_blue());
 
         let mut table = Table::new();
         table.load_preset(UTF8_FULL);
@@ -140,7 +146,9 @@ impl ReportRenderer {
         println!();
         println!(
             "{} (Top-K: {}, Retrieved: {}, Latency: {}ms, Avg Similarity: {:.2})",
-            "⚡ LAYER 1: VECTOR RETRIEVAL ANALYSIS".bold().bright_yellow(),
+            "⚡ LAYER 1: VECTOR RETRIEVAL ANALYSIS"
+                .bold()
+                .bright_yellow(),
             report.retrieval.top_k,
             report.retrieval.chunks_retrieved,
             report.retrieval.latency_ms,
@@ -195,7 +203,9 @@ impl ReportRenderer {
         println!();
         println!(
             "{}",
-            "📊 LAYER 2: CONTEXT CONSTRUCTION & TOKEN EFFICIENCY".bold().bright_magenta()
+            "📊 LAYER 2: CONTEXT CONSTRUCTION & TOKEN EFFICIENCY"
+                .bold()
+                .bright_magenta()
         );
 
         let ctx = &report.context;
@@ -256,7 +266,9 @@ impl ReportRenderer {
         println!();
         println!(
             "{} (Inference Latency: {}ms, Prompt: {} tok, Completion: {} tok)",
-            "🧠 LAYER 3: GENERATION & GROUNDING ANALYSIS".bold().bright_cyan(),
+            "🧠 LAYER 3: GENERATION & GROUNDING ANALYSIS"
+                .bold()
+                .bright_cyan(),
             report.generation.latency_ms,
             report.generation.prompt_tokens,
             report.generation.completion_tokens
@@ -264,14 +276,20 @@ impl ReportRenderer {
 
         println!();
         println!("{}", "Generated Response Preview:".bold());
-        println!("  {}", format!("\"{}\"", report.generation.generated_text).italic().dimmed());
+        println!(
+            "  {}",
+            format!("\"{}\"", report.generation.generated_text)
+                .italic()
+                .dimmed()
+        );
         println!();
 
         let mut table = Table::new();
         table.load_preset(UTF8_FULL);
         table.set_content_arrangement(ContentArrangement::Dynamic);
 
-        let hallucination_risk_str = format!("{:.1}%", report.generation.hallucination_score * 100.0);
+        let hallucination_risk_str =
+            format!("{:.1}%", report.generation.hallucination_score * 100.0);
         let hallucination_cell = if report.generation.hallucination_score <= 0.05 {
             Cell::new(format!("{} (LOW)", hallucination_risk_str)).fg(Color::Green)
         } else if report.generation.hallucination_score <= 0.15 {
@@ -282,7 +300,11 @@ impl ReportRenderer {
 
         table.add_row(vec![
             Cell::new("Grounding Attribution").add_attribute(Attribute::Bold),
-            Cell::new(format!("{:.1}%", report.generation.source_attribution_pct * 100.0)).fg(Color::Green),
+            Cell::new(format!(
+                "{:.1}%",
+                report.generation.source_attribution_pct * 100.0
+            ))
+            .fg(Color::Green),
         ]);
         table.add_row(vec![
             Cell::new("Hallucination Risk Score").add_attribute(Attribute::Bold),

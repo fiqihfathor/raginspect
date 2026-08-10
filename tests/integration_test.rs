@@ -1,8 +1,6 @@
 //! Integration tests for raginspect
 
-use raginspect::{
-    Inspector, InspectMode, PipelineConfig, RagArchitecture,
-};
+use raginspect::{InspectMode, Inspector, PipelineConfig, RagArchitecture};
 
 #[test]
 fn test_naive_rag_inspection() {
@@ -48,7 +46,12 @@ fn test_all_architectures_produce_recommendations() {
 
 #[test]
 fn test_inspect_modes() {
-    for mode in [InspectMode::Full, InspectMode::Retrieval, InspectMode::Context, InspectMode::Quick] {
+    for mode in [
+        InspectMode::Full,
+        InspectMode::Retrieval,
+        InspectMode::Context,
+        InspectMode::Quick,
+    ] {
         let mut inspector = Inspector::new(PipelineConfig::default(), None);
         inspector.set_architecture(RagArchitecture::Naive);
 

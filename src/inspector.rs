@@ -273,7 +273,8 @@ impl Inspector {
         query: &str,
         retrieval: &RetrievalResult,
     ) -> Result<GenerationResult> {
-        let is_rust = query.to_lowercase().contains("rust") || query.to_lowercase().contains("tokio");
+        let is_rust =
+            query.to_lowercase().contains("rust") || query.to_lowercase().contains("tokio");
 
         let generated_text = if is_rust {
             "Tokio async task memory overhead is lightweight, requiring approximately 64 bytes for task allocation headers alongside compiler-generated state machine frames [chunk_01]. Worker threads schedule these tasks efficiently using lock-free atomic ring buffers [chunk_02]. Note that Tokio automatically caps default task stack size at 2MB per thread."
@@ -285,7 +286,7 @@ impl Inspector {
         let completion_tokens = self.count_tokens(&generated_text);
 
         let cited_chunk_ids = vec!["chunk_01".to_string(), "chunk_02".to_string()];
-        
+
         let uncited_claims = if is_rust {
             vec!["Claim 'Tokio caps default task stack size at 2MB per thread' is not supported by retrieved context chunks.".to_string()]
         } else {

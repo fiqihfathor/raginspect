@@ -2,9 +2,7 @@
 //!
 //! Run with: `cargo run --example naive_rag_inspect`
 
-use raginspect::{
-    Inspector, InspectMode, PipelineConfig, RagArchitecture, ReportRenderer,
-};
+use raginspect::{InspectMode, Inspector, PipelineConfig, RagArchitecture, ReportRenderer};
 
 fn main() -> anyhow::Result<()> {
     // Load pipeline config (or use defaults)

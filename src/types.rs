@@ -41,12 +41,24 @@ impl RagArchitecture {
     pub fn diagnostic_focus(&self) -> &'static str {
         match self {
             RagArchitecture::Naive => "Single-pass dense retrieval with direct context stuffing",
-            RagArchitecture::Advanced => "Re-ranking quality, hybrid search fusion, and query expansion effectiveness",
-            RagArchitecture::Modular => "Inter-module contract validation, stage isolation, and pipeline orchestration",
-            RagArchitecture::Agentic => "Tool-use decision accuracy, retrieval iteration depth, and routing correctness",
-            RagArchitecture::Graph => "Entity extraction coverage, relationship traversal depth, and community detection",
-            RagArchitecture::Hyde => "Hypothetical document quality, embedding drift, and retrieval precision lift",
-            RagArchitecture::Multimodal => "Cross-modal alignment, modality weighting, and fusion strategy effectiveness",
+            RagArchitecture::Advanced => {
+                "Re-ranking quality, hybrid search fusion, and query expansion effectiveness"
+            }
+            RagArchitecture::Modular => {
+                "Inter-module contract validation, stage isolation, and pipeline orchestration"
+            }
+            RagArchitecture::Agentic => {
+                "Tool-use decision accuracy, retrieval iteration depth, and routing correctness"
+            }
+            RagArchitecture::Graph => {
+                "Entity extraction coverage, relationship traversal depth, and community detection"
+            }
+            RagArchitecture::Hyde => {
+                "Hypothetical document quality, embedding drift, and retrieval precision lift"
+            }
+            RagArchitecture::Multimodal => {
+                "Cross-modal alignment, modality weighting, and fusion strategy effectiveness"
+            }
         }
     }
 
