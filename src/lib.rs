@@ -19,12 +19,14 @@
 
 pub mod config;
 pub mod inspector;
+pub mod profiler;
 pub mod report;
 pub mod types;
 
 // Re-export primary types for convenience
 pub use config::PipelineConfig;
 pub use inspector::Inspector;
+pub use profiler::{PipelineProfile, Stage, StageTimer};
 pub use report::ReportRenderer;
 pub use types::{
     ChunkInfo, ContextStage, GenerationResult, InspectMode, InspectionReport, RagArchitecture,
