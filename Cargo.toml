@@ -2,7 +2,7 @@
 name = "raginspect"
 version = "0.1.0"
 edition = "2021"
-authors = ["Fiqih Fathur Rahman <fiqihfathor@gmail.com>"]
+authors = ["Fiqih Fathor Rachim <fiqih.fathor.rachim@gmail.com>"]
 description = "🔍 RAG Inspection & Profiling Engine — X-ray for Retrieval Augmented Generation pipelines"
 license = "MIT"
 readme = "README.md"
