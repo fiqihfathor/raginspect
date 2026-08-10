@@ -1,7 +1,8 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use colored::Colorize;
 use std::path::PathBuf;
+
+mod reporter;
 
 use raginspect::{
     InspectMode, Inspector, MultiRunProfiler, PipelineConfig, PipelineProfile, RagArchitecture,
@@ -204,34 +205,7 @@ fn print_profile(profile: &PipelineProfile, format: &str) {
             println!("{}", json);
         }
         _ => {
-            println!("{}", "Pipeline Profile".bold().cyan());
-            println!("{}", "─".repeat(60));
-
-            use comfy_table::{presets::UTF8_FULL, ContentArrangement, Table};
-
-            let mut table = Table::new();
-            table
-                .load_preset(UTF8_FULL)
-                .set_content_arrangement(ContentArrangement::Dynamic)
-                .set_header(vec!["Stage", "Duration", "Tokens", "Cost"]);
-
-            for stage in &profile.stages {
-                table.add_row(vec![
-                    &stage.name,
-                    &format!("{} ms", stage.duration_ms),
-                    &format!("{}", stage.token_count),
-                    &format!("${:.4}", stage.cost),
-                ]);
-            }
-
-            table.add_row(vec![
-                "TOTAL",
-                &format!("{} ms", profile.total_duration_ms),
-                &format!("{}", profile.total_tokens),
-                &format!("${:.4}", profile.total_cost),
-            ]);
-
-            println!("{table}");
+            reporter::render_profile_table(profile, &reporter::Thresholds::default());
         }
     }
 }
@@ -243,33 +217,7 @@ fn print_stats(stats: &[raginspect::StageStats], format: &str, query: &str) -> R
             println!("{}", json);
         }
         _ => {
-            println!("{}", "Profiling Results".bold().cyan());
-            println!("Query: \"{}\"", query);
-            println!("{}", "─".repeat(70));
-
-            use comfy_table::{presets::UTF8_FULL, ContentArrangement, Table};
-
-            let mut table = Table::new();
-            table
-                .load_preset(UTF8_FULL)
-                .set_content_arrangement(ContentArrangement::Dynamic)
-                .set_header(vec![
-                    "Stage", "P50 (ms)", "P99 (ms)", "Min", "Max", "Mean", "Runs",
-                ]);
-
-            for s in stats {
-                table.add_row(vec![
-                    &s.name,
-                    &format!("{:.1}", s.p50_ms),
-                    &format!("{:.1}", s.p99_ms),
-                    &format!("{:.1}", s.min_ms),
-                    &format!("{:.1}", s.max_ms),
-                    &format!("{:.1}", s.mean_ms),
-                    &format!("{}", s.runs),
-                ]);
-            }
-
-            println!("{table}");
+            reporter::render_stats_table(stats, query, &reporter::Thresholds::default());
         }
     }
     Ok(())
