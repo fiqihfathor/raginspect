@@ -313,7 +313,7 @@ impl Inspector {
         })
     }
 
-    /// Calculate aggregate RAG health score (0-100).
+    /// Calculate aggregate RAG health score (0-100) using architecture-specific weights.
     fn calculate_health_score(
         &self,
         retrieval: &RetrievalResult,
@@ -329,8 +329,10 @@ impl Inspector {
         // Grounding Component (0-100)
         let grounding_score = generation.source_attribution_pct * 100.0;
 
-        // Weighted Average: 35% Relevance, 35% Efficiency, 30% Grounding
-        (relevance_score * 0.35 + efficiency_score * 0.35 + grounding_score * 0.30).round()
+        // Architecture-specific weights (with config override support)
+        let weights =
+            crate::metrics::MetricWeights::resolve(&self.architecture, &self.config.metrics);
+        weights.calculate_score(relevance_score, efficiency_score, grounding_score)
     }
 
     /// Generate actionable recommendations based on diagnostic findings.
