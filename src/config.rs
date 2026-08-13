@@ -148,6 +148,43 @@ pub struct MultimodalConfig {
     pub modalities: Vec<String>,
 }
 
+/// Metric weight override configuration.
+///
+/// When `override_weights` is true, the provided weight values are used
+/// instead of the architecture-specific defaults.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MetricsConfig {
+    #[serde(default)]
+    pub override_weights: bool,
+    #[serde(default = "default_relevance_weight")]
+    pub relevance_weight: f64,
+    #[serde(default = "default_efficiency_weight")]
+    pub efficiency_weight: f64,
+    #[serde(default = "default_grounding_weight")]
+    pub grounding_weight: f64,
+}
+
+fn default_relevance_weight() -> f64 {
+    0.35
+}
+fn default_efficiency_weight() -> f64 {
+    0.35
+}
+fn default_grounding_weight() -> f64 {
+    0.30
+}
+
+impl Default for MetricsConfig {
+    fn default() -> Self {
+        Self {
+            override_weights: false,
+            relevance_weight: 0.35,
+            efficiency_weight: 0.35,
+            grounding_weight: 0.30,
+        }
+    }
+}
+
 /// Master pipeline configuration structure parsed from TOML.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PipelineConfig {
@@ -176,6 +213,8 @@ pub struct PipelineConfig {
     pub hyde: HydeConfig,
     #[serde(default)]
     pub multimodal: MultimodalConfig,
+    #[serde(default)]
+    pub metrics: MetricsConfig,
 }
 
 impl Default for PipelineConfig {
@@ -194,6 +233,7 @@ impl Default for PipelineConfig {
             graph: GraphConfig::default(),
             hyde: HydeConfig::default(),
             multimodal: MultimodalConfig::default(),
+            metrics: MetricsConfig::default(),
         }
     }
 }

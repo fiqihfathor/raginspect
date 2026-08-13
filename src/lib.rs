@@ -20,6 +20,7 @@
 pub mod classifier;
 pub mod config;
 pub mod inspector;
+pub mod metrics;
 pub mod naive_pipeline;
 pub mod profiler;
 pub mod report;
@@ -30,6 +31,7 @@ pub mod types;
 pub use classifier::{ArchitectureClassifier, ClassificationResult};
 pub use config::PipelineConfig;
 pub use inspector::Inspector;
+pub use metrics::MetricWeights;
 pub use profiler::{MultiRunProfiler, PipelineProfile, Stage, StageStats, StageTimer};
 pub use report::ReportRenderer;
 pub use topology::{PipelineComponent, PipelineTopology, TopologyAnalyzer};
