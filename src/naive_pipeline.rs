@@ -363,8 +363,8 @@ mod tests {
         assert!(profile.find("query_embedding").unwrap().duration_ms >= 1);
         assert!(profile.find("vector_search").unwrap().duration_ms >= 1);
         assert!(profile.find("generation").unwrap().duration_ms >= 1);
-        // context_assembly has no sleep, so just check it's >= 0
-        assert!(profile.find("context_assembly").unwrap().duration_ms >= 0);
+        // context_assembly has no sleep, so just verify the stage exists
+        assert!(profile.find("context_assembly").is_some());
     }
 
     #[test]
