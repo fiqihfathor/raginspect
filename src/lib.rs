@@ -19,6 +19,7 @@
 
 pub mod config;
 pub mod inspector;
+pub mod naive_pipeline;
 pub mod profiler;
 pub mod report;
 pub mod types;
