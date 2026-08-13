@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use std::path::PathBuf;
 
 mod reporter;
@@ -23,6 +23,15 @@ use raginspect::{
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
+}
+
+/// Output format for profiling results.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum OutputFormat {
+    /// Render results as a formatted table (default)
+    Table,
+    /// Render results as pretty-printed JSON
+    Json,
 }
 
 #[derive(Subcommand, Debug)]
@@ -76,9 +85,9 @@ enum Commands {
         #[arg(short = 'n', long = "runs", default_value_t = 1)]
         runs: usize,
 
-        /// Output format: table or json
-        #[arg(short = 'f', long = "format", default_value = "table")]
-        format: String,
+        /// Output format
+        #[arg(short = 'f', long = "format", value_enum, default_value_t = OutputFormat::Table)]
+        format: OutputFormat,
 
         /// Query to profile (uses mock pipeline by default)
         #[arg(short = 'q', long = "query", default_value = "What is RAG?")]
@@ -122,12 +131,33 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Profile {
-            pipeline_config: _,
+            pipeline_config,
             runs,
             format,
             query,
         }) => {
+            // Validate --runs > 0
+            if runs == 0 {
+                eprintln!("error: --runs must be at least 1");
+                return Err(anyhow::anyhow!("--runs must be at least 1"));
+            }
+
+            // Validate the config file exists.
+            // TODO: Replace mock data below with real profiling that uses this config.
+            match PipelineConfig::load_from_file(&pipeline_config) {
+                Ok(_cfg) => {
+                    // Config loaded successfully; real profiling would use it here.
+                }
+                Err(err) => {
+                    eprintln!(
+                        "⚠️  Warning: Could not load config from {:?}: {}. Proceeding with mock data.",
+                        pipeline_config, err
+                    );
+                }
+            }
+
             if runs == 1 {
+                // TODO: This is temporary mock data — replace with real pipeline profiling.
                 let mut profile = PipelineProfile::new();
                 profile.add_stage(
                     Stage::new("query_embedding")
@@ -147,8 +177,9 @@ fn main() -> Result<()> {
                         .with_cost(0.0048),
                 );
 
-                print_profile(&profile, &format);
+                print_profile(&profile, format)?;
             } else {
+                // TODO: This is temporary mock data — replace with real pipeline profiling.
                 let mut profiler = MultiRunProfiler::new(runs);
                 let durations_emb = [6, 8, 7, 9, 8, 7, 10, 8, 7, 9];
                 let durations_search = [20, 25, 22, 28, 24, 21, 30, 26, 23, 25];
@@ -180,7 +211,7 @@ fn main() -> Result<()> {
                 }
 
                 let stats = profiler.compute_stats();
-                print_stats(&stats, &format, &query)?;
+                print_stats(&stats, format, &query)?;
             }
         }
 
@@ -198,25 +229,26 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn print_profile(profile: &PipelineProfile, format: &str) {
+fn print_profile(profile: &PipelineProfile, format: OutputFormat) -> Result<()> {
     match format {
-        "json" => {
-            let json = serde_json::to_string_pretty(profile).unwrap_or_default();
+        OutputFormat::Json => {
+            let json = serde_json::to_string_pretty(profile)?;
             println!("{}", json);
         }
-        _ => {
+        OutputFormat::Table => {
             reporter::render_profile_table(profile, &reporter::Thresholds::default());
         }
     }
+    Ok(())
 }
 
-fn print_stats(stats: &[raginspect::StageStats], format: &str, query: &str) -> Result<()> {
+fn print_stats(stats: &[raginspect::StageStats], format: OutputFormat, query: &str) -> Result<()> {
     match format {
-        "json" => {
-            let json = serde_json::to_string_pretty(stats).unwrap_or_default();
+        OutputFormat::Json => {
+            let json = serde_json::to_string_pretty(stats)?;
             println!("{}", json);
         }
-        _ => {
+        OutputFormat::Table => {
             reporter::render_stats_table(stats, query, &reporter::Thresholds::default());
         }
     }
