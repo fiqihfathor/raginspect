@@ -77,6 +77,77 @@ impl Default for ContextConfig {
     }
 }
 
+// ── Optional pipeline components (all default to disabled) ──
+
+/// Re-ranking configuration (Advanced RAG).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct RerankingConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub model: String,
+    #[serde(default = "default_top_n_rerank")]
+    pub top_n: usize,
+}
+
+fn default_top_n_rerank() -> usize {
+    3
+}
+
+/// Hybrid search fusion configuration (Advanced/Modular RAG).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct FusionConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub method: String,
+}
+
+/// LLM-driven routing configuration (Modular/Agentic RAG).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct RoutingConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub routes: Vec<String>,
+}
+
+/// Tool-calling configuration (Agentic RAG).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ToolConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub tools: Vec<String>,
+}
+
+/// Knowledge graph configuration (Graph RAG).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct GraphConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub entity_types: Vec<String>,
+}
+
+/// HyDE configuration (Hypothetical Document Embeddings).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct HydeConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub generation_model: String,
+}
+
+/// Multimodal retrieval configuration.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct MultimodalConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub modalities: Vec<String>,
+}
+
 /// Master pipeline configuration structure parsed from TOML.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PipelineConfig {
@@ -91,6 +162,20 @@ pub struct PipelineConfig {
     pub llm: LlmConfig,
     #[serde(default)]
     pub context: ContextConfig,
+    #[serde(default)]
+    pub reranking: RerankingConfig,
+    #[serde(default)]
+    pub fusion: FusionConfig,
+    #[serde(default)]
+    pub routing: RoutingConfig,
+    #[serde(default)]
+    pub tools: ToolConfig,
+    #[serde(default)]
+    pub graph: GraphConfig,
+    #[serde(default)]
+    pub hyde: HydeConfig,
+    #[serde(default)]
+    pub multimodal: MultimodalConfig,
 }
 
 impl Default for PipelineConfig {
@@ -102,6 +187,13 @@ impl Default for PipelineConfig {
             vector_store: VectorStoreConfig::default(),
             llm: LlmConfig::default(),
             context: ContextConfig::default(),
+            reranking: RerankingConfig::default(),
+            fusion: FusionConfig::default(),
+            routing: RoutingConfig::default(),
+            tools: ToolConfig::default(),
+            graph: GraphConfig::default(),
+            hyde: HydeConfig::default(),
+            multimodal: MultimodalConfig::default(),
         }
     }
 }

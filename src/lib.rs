@@ -17,18 +17,22 @@
 //! }
 //! ```
 
+pub mod classifier;
 pub mod config;
 pub mod inspector;
 pub mod naive_pipeline;
 pub mod profiler;
 pub mod report;
+pub mod topology;
 pub mod types;
 
 // Re-export primary types for convenience
+pub use classifier::{ArchitectureClassifier, ClassificationResult};
 pub use config::PipelineConfig;
 pub use inspector::Inspector;
 pub use profiler::{MultiRunProfiler, PipelineProfile, Stage, StageStats, StageTimer};
 pub use report::ReportRenderer;
+pub use topology::{PipelineComponent, PipelineTopology, TopologyAnalyzer};
 pub use types::{
     ChunkInfo, ContextStage, GenerationResult, InspectMode, InspectionReport, RagArchitecture,
     RetrievalResult, Verdict,
