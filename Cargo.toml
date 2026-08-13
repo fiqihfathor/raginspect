@@ -17,6 +17,10 @@ exclude = [
     "README.agy.md",
 ]
 
+[features]
+default = []
+memory-tracking = ["dep:sysinfo"]
+
 [dependencies]
 clap = { version = "4.4", features = ["derive", "env"] }
 serde = { version = "1.0", features = ["derive"] }
@@ -30,6 +34,7 @@ anyhow = "1.0"
 colored = "2.1"
 comfy-table = "7.1"
 chrono = "0.4"
+sysinfo = { version = "0.30", optional = true }
 
 [profile.release]
 opt-level = 3
