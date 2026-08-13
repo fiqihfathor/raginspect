@@ -1,0 +1,27 @@
+# Test fixture: minimal pipeline config for integration tests
+
+name = "Test-Pipeline"
+description = "Minimal test fixture config"
+
+[embedding]
+model = "text-embedding-3-small"
+dimension = 768
+distance_metric = "cosine"
+
+[vector_store]
+provider = "qdrant"
+collection = "test_docs"
+top_k = 3
+similarity_threshold = 0.70
+
+[llm]
+provider = "openai"
+model = "gpt-4o-mini"
+endpoint = "https://api.openai.com/v1"
+max_tokens = 512
+temperature = 0.0
+
+[context]
+max_context_tokens = 2048
+deduplicate_threshold = 0.80
+prune_irrelevant = true

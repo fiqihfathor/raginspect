@@ -31,39 +31,25 @@ RAG pipelines are everywhere, but nobody can see inside them. Every existing too
 ### Rust CLI
 
 ```bash
-# Install
-cargo install raginspect
+# Build from source
+git clone https://github.com/fiqihfathor/raginspect.git
+cd raginspect
+cargo build --release
 
-# Profile a pipeline
-raginspect profile my-pipeline.json
+# Inspect a RAG pipeline (uses mock data, no API keys needed)
+cargo run --release -- inspect
 
-# Auto-detect architecture
-raginspect classify my-pipeline.json
+# Profile per-stage timing
+cargo run --release -- profile
 
-# Export results
-raginspect profile my-pipeline.json --format json -o results.json
+# Multi-run profiling with p50/p99 stats
+cargo run --release -- profile --runs 10 --format json
+
+# Run the example
+cargo run --example naive_rag_inspect
 ```
 
-### Python
-
-```bash
-pip install raginspect
-```
-
-```python
-import raginspect
-
-# Profile any RAG pipeline
-results = raginspect.profile(pipeline)
-
-# Auto-detect architecture
-arch = raginspect.classify(pipeline)
-print(f"Detected: {arch.type}")  # e.g. "Modular RAG"
-
-# Get stage breakdown
-for stage in results.stages:
-    print(f"{stage.name}: {stage.latency_p50:.1f}ms | {stage.tokens} tokens")
-```
+📖 **[Full Quickstart Guide →](docs/quickstart.md)** — step-by-step tutorial, library usage, config reference, and CLI examples.
 
 ---
 
