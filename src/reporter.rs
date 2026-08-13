@@ -138,3 +138,118 @@ pub fn render_stats_table(stats: &[StageStats], query: &str, thresholds: &Thresh
 
     println!("{table}");
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── Thresholds ──
+
+    #[test]
+    fn test_thresholds_default() {
+        let t = Thresholds::default();
+        assert_eq!(t.ok_ms, 50);
+        assert_eq!(t.slow_ms, 500);
+    }
+
+    #[test]
+    fn test_thresholds_custom() {
+        let t = Thresholds {
+            ok_ms: 100,
+            slow_ms: 1000,
+        };
+        assert_eq!(t.ok_ms, 100);
+        assert_eq!(t.slow_ms, 1000);
+    }
+
+    // ── DurationStatus::from_ms boundary semantics ──
+    // Acceptance criteria: green < 50ms, yellow < 500ms, red >= 500ms
+
+    #[test]
+    fn test_status_ok_below_threshold() {
+        let t = Thresholds::default();
+        assert_eq!(DurationStatus::from_ms(0, &t), DurationStatus::Ok);
+        assert_eq!(DurationStatus::from_ms(1, &t), DurationStatus::Ok);
+        assert_eq!(DurationStatus::from_ms(49, &t), DurationStatus::Ok);
+    }
+
+    #[test]
+    fn test_status_ok_boundary_exclusive() {
+        // 50 is NOT ok — it's the first warn value (< ok_ms is strict)
+        let t = Thresholds::default();
+        assert_eq!(DurationStatus::from_ms(50, &t), DurationStatus::Warn);
+    }
+
+    #[test]
+    fn test_status_warn_range() {
+        let t = Thresholds::default();
+        assert_eq!(DurationStatus::from_ms(50, &t), DurationStatus::Warn);
+        assert_eq!(DurationStatus::from_ms(100, &t), DurationStatus::Warn);
+        assert_eq!(DurationStatus::from_ms(499, &t), DurationStatus::Warn);
+    }
+
+    #[test]
+    fn test_status_slow_boundary_inclusive() {
+        // 500 is the first slow value (>= slow_ms)
+        let t = Thresholds::default();
+        assert_eq!(DurationStatus::from_ms(500, &t), DurationStatus::Slow);
+    }
+
+    #[test]
+    fn test_status_slow_above_threshold() {
+        let t = Thresholds::default();
+        assert_eq!(DurationStatus::from_ms(501, &t), DurationStatus::Slow);
+        assert_eq!(DurationStatus::from_ms(10000, &t), DurationStatus::Slow);
+    }
+
+    #[test]
+    fn test_status_custom_thresholds() {
+        let t = Thresholds {
+            ok_ms: 10,
+            slow_ms: 100,
+        };
+        assert_eq!(DurationStatus::from_ms(9, &t), DurationStatus::Ok);
+        assert_eq!(DurationStatus::from_ms(10, &t), DurationStatus::Warn);
+        assert_eq!(DurationStatus::from_ms(99, &t), DurationStatus::Warn);
+        assert_eq!(DurationStatus::from_ms(100, &t), DurationStatus::Slow);
+    }
+
+    // ── DurationStatus labels & colorize ──
+
+    #[test]
+    fn test_status_labels_contain_text() {
+        // Labels contain ANSI color codes but should include the word
+        assert!(DurationStatus::Ok.label().contains("OK"));
+        assert!(DurationStatus::Warn.label().contains("WARN"));
+        assert!(DurationStatus::Slow.label().contains("SLOW"));
+    }
+
+    #[test]
+    fn test_status_colorize_preserves_text() {
+        let text = "42 ms";
+        assert!(DurationStatus::Ok.colorize(text).contains("42 ms"));
+        assert!(DurationStatus::Warn.colorize(text).contains("42 ms"));
+        assert!(DurationStatus::Slow.colorize(text).contains("42 ms"));
+    }
+
+    #[test]
+    fn test_status_colorize_adds_ansi() {
+        // Force colored output on (tests run without a TTY)
+        colored::control::set_override(true);
+        let plain = "100 ms";
+        assert!(DurationStatus::Warn.colorize(plain).len() > plain.len());
+        colored::control::unset_override();
+    }
+
+    #[test]
+    fn test_status_all_variants() {
+        let t = Thresholds::default();
+        // Ensure all three variants are reachable and distinct
+        let ok = DurationStatus::from_ms(10, &t);
+        let warn = DurationStatus::from_ms(100, &t);
+        let slow = DurationStatus::from_ms(600, &t);
+        assert_ne!(ok, warn);
+        assert_ne!(warn, slow);
+        assert_ne!(ok, slow);
+    }
+}
