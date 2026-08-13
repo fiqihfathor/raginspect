@@ -163,7 +163,7 @@ impl NaivePipeline {
             })
             .collect();
 
-        scored.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+        scored.sort_by(|a, b| b.0.total_cmp(&a.0));
         scored.into_iter().take(top_k).map(|(_, c)| c).collect()
     }
 
@@ -210,9 +210,13 @@ fn mock_embed(text: &str) -> f64 {
     (hash % 1000) as f64 / 1000.0
 }
 
-/// Rough token estimate: ~4 chars per token.
+/// Rough token estimate: ~4 bytes per token.
 fn estimate_tokens(text: &str) -> usize {
-    (text.len() / 4).max(1)
+    if text.is_empty() {
+        0
+    } else {
+        (text.len() / 4).max(1)
+    }
 }
 
 /// Default mock corpus covering common RAG topics.
@@ -369,8 +373,9 @@ mod tests {
 
     #[test]
     fn test_token_estimation() {
+        assert_eq!(estimate_tokens(""), 0);
         assert_eq!(estimate_tokens("hello"), 1);
-        assert_eq!(estimate_tokens("hello world"), 2); // 11 chars / 4 = 2.75 → 2
+        assert_eq!(estimate_tokens("hello world"), 2); // 11 bytes / 4 = 2 (integer division)
         assert_eq!(estimate_tokens("abcd"), 1);
         assert_eq!(estimate_tokens("abcdefgh"), 2);
     }

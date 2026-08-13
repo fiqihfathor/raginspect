@@ -161,9 +161,9 @@ impl StageStats {
             };
         }
 
-        durations_ms.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        durations_ms.sort_by(|a, b| a.total_cmp(b));
         tokens.sort();
-        costs.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        costs.sort_by(|a, b| a.total_cmp(b));
 
         Self {
             name: name.to_string(),
@@ -282,7 +282,7 @@ fn percentile_usize(sorted: &[usize], pct: usize) -> f64 {
 /// use raginspect::MultiRunProfiler;
 /// use raginspect::Stage;
 ///
-/// let mut profiler = MultiRunProfiler::new(10); // 10 runs
+/// let mut profiler = MultiRunProfiler::new(10); // pre-allocate for 10 runs
 /// for _ in 0..10 {
 ///     profiler.run(|profile| {
 ///         profile.add_stage(Stage::new("embedding").with_duration(5).with_tokens(10));
@@ -293,8 +293,6 @@ fn percentile_usize(sorted: &[usize], pct: usize) -> f64 {
 /// println!("p50 search: {:.1}ms", stats[1].p50_ms);
 /// ```
 pub struct MultiRunProfiler {
-    /// Number of runs to execute
-    pub runs: usize,
     /// All completed profiles
     pub profiles: Vec<PipelineProfile>,
     #[cfg(feature = "memory-tracking")]
@@ -305,10 +303,12 @@ pub struct MultiRunProfiler {
 
 impl MultiRunProfiler {
     /// Create a new multi-run profiler.
-    pub fn new(runs: usize) -> Self {
+    ///
+    /// `expected_runs` is used only to pre-allocate capacity; the profiler
+    /// collects as many runs as you call [`run`](Self::run) with.
+    pub fn new(expected_runs: usize) -> Self {
         Self {
-            runs,
-            profiles: Vec::with_capacity(runs),
+            profiles: Vec::with_capacity(expected_runs),
             #[cfg(feature = "memory-tracking")]
             sys: System::new_all(),
             #[cfg(feature = "memory-tracking")]
