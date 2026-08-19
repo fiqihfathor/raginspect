@@ -135,7 +135,7 @@ fn main() {
 
 ## 5. Custom Configuration
 
-Create a TOML config file (see `examples/configs/sample.toml` for full reference):
+Create a TOML config file (see `rust/raginspect/examples/configs/sample.toml` for full reference):
 
 ```toml
 name = "My-Pipeline"
@@ -165,8 +165,8 @@ prune_irrelevant = true
 Use it with:
 
 ```bash
-cargo run --release -- inspect -c examples/configs/sample.toml -q "Your query here"
-cargo run --release -- profile -c examples/configs/sample.toml --runs 5
+cargo run --release -- inspect -c rust/raginspect/examples/configs/sample.toml -q "Your query here"
+cargo run --release -- profile -c rust/raginspect/examples/configs/sample.toml --runs 5
 ```
 
 ## 6. CLI Reference
@@ -177,7 +177,7 @@ raginspect profile   # Measure per-stage timing
 
 # Inspect options
   -q, --query <QUERY>              Query string (default: RAG question)
-  -c, --pipeline-config <PATH>     Config file (default: examples/configs/sample.toml)
+  -c, --pipeline-config <PATH>     Config file (default: rust/raginspect/examples/configs/sample.toml)
   -m, --model <MODEL>              Override LLM model name
   -i, --inspect-mode <MODE>        full | retrieval | context | quick
   -a, --architecture <ARCH>        naive | advanced | modular | agentic | graph | hyde | multimodal
