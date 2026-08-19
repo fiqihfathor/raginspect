@@ -54,21 +54,30 @@ cargo run --example naive_rag_inspect
 ### Python
 
 ```bash
-# Build and install the Python extension (requires Rust toolchain)
+# Build and install (requires Rust toolchain)
 pip install maturin
 maturin develop --release
+
+# Or editable install for development
+pip install -e .
 ```
 
 ```python
-import raginspect
+from raginspect import inspect_pipeline, classify_pipeline
 
-# Inspect a pipeline — partial dicts use sensible defaults
-report = raginspect.profile({"name": "My-Pipeline", "vector_store": {"top_k": 3}})
-print(report["overall_score"], report["recommendations"])
+# High-level API — typed dataclasses, full docstrings
+report = inspect_pipeline({"vector_store": {"top_k": 3}}, query="What is RAG?")
+print(report.summary())
+# score=75.0 architecture=naive recommendations=4
+print(report.overall_score, report.recommendations[0])
 
 # Auto-detect the RAG architecture
-result = raginspect.classify({"hyde": {"enabled": True}})
-print(result["architecture"], result["confidence"])  # hyde 0.95
+result = classify_pipeline({"hyde": {"enabled": True}})
+print(result.architecture, result.confidence)  # hyde 0.95
+
+# Raw dicts still available via the compiled functions
+from raginspect import profile, classify
+raw = profile({})
 ```
 
 ---
