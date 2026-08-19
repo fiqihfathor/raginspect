@@ -16,5 +16,6 @@ classifiers = [
 
 [tool.maturin]
 manifest-path = "rust/raginspect-bindings/Cargo.toml"
-module-name = "raginspect"
+module-name = "raginspect.raginspect"
 features = ["extension-module"]
+python-source = "python"
