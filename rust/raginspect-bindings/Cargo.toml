@@ -1,0 +1,22 @@
+[package]
+name = "raginspect-bindings"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fiqih Fathor Rachim <fiqih.fathor.rachim@gmail.com>"]
+description = "Python bindings for raginspect"
+license = "MIT"
+
+[lib]
+name = "raginspect"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["abi3-py38"] }
+raginspect = { path = "../raginspect" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]

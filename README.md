@@ -51,6 +51,26 @@ cargo run --example naive_rag_inspect
 
 📖 **[Full Quickstart Guide →](docs/quickstart.md)** — step-by-step tutorial, library usage, config reference, and CLI examples.
 
+### Python
+
+```bash
+# Build and install the Python extension (requires Rust toolchain)
+pip install maturin
+maturin develop --release
+```
+
+```python
+import raginspect
+
+# Inspect a pipeline — partial dicts use sensible defaults
+report = raginspect.profile({"name": "My-Pipeline", "vector_store": {"top_k": 3}})
+print(report["overall_score"], report["recommendations"])
+
+# Auto-detect the RAG architecture
+result = raginspect.classify({"hyde": {"enabled": True}})
+print(result["architecture"], result["confidence"])  # hyde 0.95
+```
+
 ---
 
 ## 📐 Supported RAG Architectures

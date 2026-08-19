@@ -54,7 +54,7 @@ jobs:
           key: ${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --workspace --features raginspect/memory-tracking -- -D warnings
 
   test:
     name: Test
@@ -75,7 +75,7 @@ jobs:
           key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run tests
-        run: cargo test --all-features --verbose
+        run: cargo test --workspace --features raginspect/memory-tracking --verbose
 
   build:
     name: Build (${{ matrix.os }})
