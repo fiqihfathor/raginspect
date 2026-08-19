@@ -1,0 +1,50 @@
+[package]
+name = "raginspect"
+version = "0.1.0"
+edition = "2021"
+authors = ["Fiqih Fathor Rachim <fiqih.fathor.rachim@gmail.com>"]
+description = "🔍 RAG Inspection & Profiling Engine — X-ray for Retrieval Augmented Generation pipelines"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/fiqihfathor/raginspect"
+homepage = "https://github.com/fiqihfathor/raginspect"
+documentation = "https://github.com/fiqihfathor/raginspect#readme"
+keywords = ["rag", "llm", "retrieval-augmented-generation", "profiling", "observability"]
+categories = ["command-line-utilities", "development-tools::profiling", "science"]
+exclude = [
+    "target/",
+    ".github/",
+    "README.agy.md",
+]
+
+[features]
+default = []
+memory-tracking = ["dep:sysinfo"]
+
+[dependencies]
+clap = { version = "4.4", features = ["derive", "env"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
+tokio = { version = "1.0", features = ["full"] }
+tiktoken-rs = "0.5"
+ratatui = "0.26"
+anyhow = "1.0"
+colored = "2.1"
+comfy-table = "7.1"
+chrono = "0.4"
+sysinfo = { version = "0.30", optional = true }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[[bench]]
+name = "inspection_benchmark"
+harness = false
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
