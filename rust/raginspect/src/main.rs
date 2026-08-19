@@ -50,7 +50,7 @@ enum Commands {
         #[arg(
             short = 'c',
             long = "pipeline-config",
-            default_value = "examples/configs/sample.toml"
+            default_value = "rust/raginspect/examples/configs/sample.toml"
         )]
         pipeline_config: PathBuf,
 
@@ -77,7 +77,7 @@ enum Commands {
         #[arg(
             short = 'c',
             long = "pipeline-config",
-            default_value = "examples/configs/sample.toml"
+            default_value = "rust/raginspect/examples/configs/sample.toml"
         )]
         pipeline_config: PathBuf,
 
