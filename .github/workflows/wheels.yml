@@ -1,0 +1,84 @@
+name: Build and Publish Wheels
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-wheels:
+    name: Build Wheels (Linux x64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry & target
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-wheels-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build Linux wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: --release --out dist
+          manylinux: auto
+
+      - name: Build sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+
+      - name: Verify wheel contents
+        run: |
+          unzip -l dist/*.whl
+
+      - name: Set up Python for smoke test
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Smoke test installed wheel
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install dist/*.whl
+          python -c "from raginspect import inspect_pipeline; r = inspect_pipeline({}); print(r.summary())"
+
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: dist/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build-wheels
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    # Note: Publishing requires the PYPI_API_TOKEN secret configured in repository secrets
+    # (or PyPI Trusted Publishing setup). If PYPI_API_TOKEN is missing, this step will fail loudly.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels
+          path: dist
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

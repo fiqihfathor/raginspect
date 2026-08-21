@@ -54,7 +54,10 @@ cargo run --example naive_rag_inspect
 ### Python
 
 ```bash
-# Build and install (requires Rust toolchain)
+# From PyPI (once v0.1.0 is published)
+pip install raginspect
+
+# Or build from source (requires Rust toolchain)
 pip install maturin
 maturin develop --release
 
